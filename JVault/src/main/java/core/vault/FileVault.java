@@ -1,5 +1,6 @@
 package core.vault;
 
+import core.encryption.Cipher;
 import core.io.fs.FileProxy;
 
 import java.io.InputStream;
@@ -9,7 +10,7 @@ import java.nio.file.Path;
 public class EncryptedFileVault implements Vault {
     private FileProxy file;
 
-    public EncryptedFileVault(FileProxy file) {
+    public EncryptedFileVault(FileProxy file, Cipher cipher) {
         this.file = file;
     }
 

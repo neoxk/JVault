@@ -1,7 +1,0 @@
-| Offset (bytes) | Size (bytes) | Encrypted | Description |
-| --- | --- | --- | --- |
-| 0   | 64  | false | Salt |
-| 64  | 4   | true | ASCII "JVAULT" |
-| 68  | 8   | true | Volume size |
-| 76  | 4   | true | Sector Size |
-| 80  | Variable | true | Data |
