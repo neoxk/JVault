@@ -1,11 +1,9 @@
 package core.encryption;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 
-public interface Cipher {
-    byte[] encrypt(byte[] data);
-    byte[] decrypt(byte[] data);
+public interface ICipher {
+    byte[] encrypt(byte[] data) throws Exception;
+    byte[] decrypt(byte[] data) throws Exception;
 //    void encryptStream(InputStream in, OutputStream out);
 //    void decryptStream(InputStream in, OutputStream out);
 }
