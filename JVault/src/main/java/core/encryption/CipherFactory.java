@@ -1,7 +1,5 @@
 package core.encryption;
 
-import core.encryption.aes.AESGCMCipher;
-
 public class CipherFactory {
     private CipherType cipher;
     private Password password;
