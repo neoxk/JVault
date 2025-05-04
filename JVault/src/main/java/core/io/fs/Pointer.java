@@ -1,9 +1,11 @@
 package core.io.fs;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Pointer {
-    private int offset;
-    private int length;
+    private long offset;
+    private Integer length;
 }

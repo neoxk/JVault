@@ -1,28 +1,18 @@
 package core.vault;
 
-import core.encryption.Cipher;
-import core.io.fs.FileProxy;
+import core.io.VaultIO;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
-public class EncryptedFileVault implements Vault {
-    private FileProxy file;
+public class FileVault implements Vault {
+    private VaultIO vaultIO;
 
-    public EncryptedFileVault(FileProxy file, Cipher cipher) {
-        this.file = file;
+    public FileVault(VaultIO vaultIO) {
+        this.vaultIO = vaultIO;
     }
 
-    @Override
-    public void writeStream(Path internal_path, InputStream stream) {
-
-    }
-
-    @Override
-    public byte[] readStream(Path internal_path, OutputStream stream) {
-        return new byte[0];
-    }
 
     @Override
     public void addFile(Path sys_path, String internal_path) {
@@ -31,6 +21,11 @@ public class EncryptedFileVault implements Vault {
 
     @Override
     public void removeFile(Path internal_path) {
+
+    }
+
+    @Override
+    public void decryptFile(String internal_path) {
 
     }
 }

@@ -11,7 +11,6 @@ public class Test {
         Password password = new Password("my pass");
 
         Vault vault = vaultFactory.create(Path.of("/home/nxk/Downloads/vault.jvault"), password);
-
-
+        vault.addFile(Path.of("/home/nxk/Downloads/test.txt"), "test.txt");
     }
 }

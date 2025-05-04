@@ -21,13 +21,4 @@ public class AESXTSCipher implements Cipher {
         return new byte[0];
     }
 
-    @Override
-    public void encryptStream(InputStream in, OutputStream out) {
-
-    }
-
-    @Override
-    public void decryptStream(InputStream in, OutputStream out) {
-
-    }
 }
