@@ -8,8 +8,8 @@ public class FileController {
         UIHelper.loadWindow(event, "/fxml/add-file.fxml", "JVault - Add File", false);
     }
 
-    public void handleEditFile(ActionEvent event) {
-        UIHelper.loadWindow(event, "/fxml/edit-file.fxml", "JVault - Edit File", false);
+    public void handleDecryptFile(ActionEvent event) {
+        // decrypt file logic here
     }
 
     public void handleOpenVault(ActionEvent event) {

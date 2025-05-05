@@ -43,21 +43,17 @@ public class MainWindow {
         @SuppressWarnings("unchecked")
         TableColumn<FileManager, String> locationCol = (TableColumn<FileManager, String>) tableView.getColumns().get(1);
         @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> driveCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
-        @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(3);
-
+        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
 
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        driveCol.setCellValueFactory(new PropertyValueFactory<>("drive"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
 
         tableView.setItems(data);
 
         // sample data
-        addFileEntry(new FileManager("MyFile.txt", "C:/Users/User/Documents", "C:", "15 KB"));
-        addFileEntry(new FileManager("Project.zip", "D:/Projects", "D:", "150 MB"));
+        addFileEntry(new FileManager("MyFile.txt", "C:/Users/User/Documents", "15 KB"));
+        addFileEntry(new FileManager("Project.zip", "D:/Projects", "150 MB"));
     }
 
     public void addFileEntry(FileManager file) {
@@ -81,8 +77,8 @@ public class MainWindow {
     }
 
     @FXML
-    void handleEditFile(ActionEvent event) {
-        fileController.handleEditFile(event);
+    void handleDecryptFile(ActionEvent event) {
+        fileController.handleDecryptFile(event);
     }
 
     @FXML

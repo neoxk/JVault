@@ -59,7 +59,7 @@
           <items>
             <MenuItem mnemonicParsing="false" onAction="#handleAddFile" text="Add File" />
             <MenuItem mnemonicParsing="false" onAction="#handleRemoveFile" text="Remove File" />
-            <MenuItem mnemonicParsing="false" onAction="#handleEditFile" text="Edit File" />
+            <MenuItem mnemonicParsing="false" onAction="#handleDecryptFile" text="Decrypt File" />
           </items>
         </Menu>
             <Menu mnemonicParsing="false" text="Vault">
@@ -92,7 +92,7 @@
                         <Font name="Franklin Gothic Book" size="20.0" />
                      </font>
                   </Button>
-                  <Button layoutX="18.0" layoutY="200.0" mnemonicParsing="false" onAction="#handleEditFile" prefHeight="37.0" prefWidth="180.0" styleClass="side-button" stylesheets="@css/style.css" text="Edit File" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
+                  <Button layoutX="18.0" layoutY="200.0" mnemonicParsing="false" onAction="#handleDecryptFile" prefHeight="37.0" prefWidth="180.0" styleClass="side-button" stylesheets="@css/style.css" text="Decrypt File" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
                      <font>
                         <Font name="Franklin Gothic Book" size="20.0" />
                      </font>
@@ -111,9 +111,8 @@
                         <TableView fx:id="tableView" layoutX="24.0" layoutY="21.0" prefHeight="473.0" prefWidth="631.0" styleClass="secure-table" stylesheets="@css/style.css" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0">
                           <columns>
                             <TableColumn prefWidth="120.0" text="Name" />
-                            <TableColumn prefWidth="258.6667175292969" text="Location" />
-                              <TableColumn prefWidth="122.0" text="Drive" />
-                              <TableColumn prefWidth="114.6666259765625" text="Size" />
+                            <TableColumn prefWidth="362.6667175292969" text="Location" />
+                              <TableColumn prefWidth="132.6666259765625" text="Size" />
                           </columns>
                         </TableView>
               </children>
