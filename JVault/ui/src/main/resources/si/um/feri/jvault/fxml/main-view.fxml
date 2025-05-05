@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="577.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="si.um.feri.jvault.controllers.MainWindow">
+  <children>
+    <MenuBar prefHeight="0.0" prefWidth="900.0" styleClass="secure-menubar" stylesheets="@css/style.css">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleAddFile" text="Add File" />
+            <MenuItem mnemonicParsing="false" onAction="#handleRemoveFile" text="Remove File" />
+            <MenuItem mnemonicParsing="false" onAction="#handleEditFile" text="Edit File" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="Vault">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleCreateVault" text="Create New Vault" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleEditVault" text="Edit Current Vault" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleCloseVault" text="Close Current Vault" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
+               </items>
+            </Menu>
+      </menus>
+    </MenuBar>
+    <SplitPane dividerPositions="0.23922734026745918" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" styleClass="secure-split" stylesheets="@css/style.css" VBox.vgrow="ALWAYS">
+      <items>
+        <AnchorPane prefHeight="515.0" prefWidth="265.0" styleClass="side-panel" stylesheets="@css/style.css">
+          <children>
+                  <Button layoutX="18.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleAddFile" prefHeight="37.0" prefWidth="180.0" styleClass="side-button" stylesheets="@css/style.css" text="Add File" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
+                     <font>
+                        <Font name="Franklin Gothic Book" size="20.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="85.0" fitWidth="160.0" layoutX="32.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@img/logo.png" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="18.0" layoutY="155.0" mnemonicParsing="false" onAction="#handleRemoveFile" prefHeight="37.0" prefWidth="180.0" styleClass="side-button" stylesheets="@css/style.css" text="Remove File" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
+                     <font>
+                        <Font name="Franklin Gothic Book" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="18.0" layoutY="200.0" mnemonicParsing="false" onAction="#handleEditFile" prefHeight="37.0" prefWidth="180.0" styleClass="side-button" stylesheets="@css/style.css" text="Edit File" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
+                     <font>
+                        <Font name="Franklin Gothic Book" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="18.0" layoutY="463.0" mnemonicParsing="false" onAction="#handleEditVault" prefHeight="37.0" prefWidth="180.0" styleClass="side-button-down" stylesheets="@css/style.css" text="Vault Properties" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0">
+                     <font>
+                        <Font name="Franklin Gothic Book" size="20.0" />
+                     </font>
+                  </Button>
+          </children>
+        </AnchorPane>
+        <ScrollPane prefHeight="526.0" prefWidth="697.0">
+          <content>
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="515.0" prefWidth="679.0">
+              <children>
+                        <TableView fx:id="tableView" layoutX="24.0" layoutY="21.0" prefHeight="473.0" prefWidth="631.0" styleClass="secure-table" stylesheets="@css/style.css" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0">
+                          <columns>
+                            <TableColumn prefWidth="120.0" text="Name" />
+                            <TableColumn prefWidth="258.6667175292969" text="Location" />
+                              <TableColumn prefWidth="122.0" text="Drive" />
+                              <TableColumn prefWidth="114.6666259765625" text="Size" />
+                          </columns>
+                        </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </ScrollPane>
+      </items>
+    </SplitPane>
+    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+      <children>
+        <Label fx:id="errorStatus" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Error Status" textFill="#9f9f9f" HBox.hgrow="ALWAYS">
+          <font>
+            <Font fx:id="" size="11.0" />
+          </font>
+        </Label>
+        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+        <Label fx:id="successStatus" maxWidth="-1.0" text="Success Status" textFill="#9f9f9f" HBox.hgrow="NEVER">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+      </children>
+      <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+      </padding>
+    </HBox>
+  </children>
+</VBox>

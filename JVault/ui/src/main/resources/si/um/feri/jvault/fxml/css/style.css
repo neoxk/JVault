@@ -1,0 +1,187 @@
+.main-button {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 20px;
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.main-button:hover {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-font-size: 20px;
+    -fx-background-color: #506052;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.side-button {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 15px;
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.side-button:hover {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-font-size: 15px;
+    -fx-background-color: #506052;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.side-button-down {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 15px;
+    -fx-background-color: #9d9d9d;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.side-button-down:hover {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-font-size: 15px;
+    -fx-background-color: #717171;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.side-panel {
+    -fx-background-color: white;
+}
+
+.heading-2 {
+    -fx-text-fill: #677D6A;
+}
+
+.secure-split > .split-pane-divider {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+
+/* MENUBAR */
+
+.secure-menubar {
+    -fx-background-color: #677D6A;
+    -fx-padding: 5px;
+}
+
+.secure-menubar .label {
+    -fx-text-fill: black;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+}
+
+.secure-menubar .menu:hover {
+    -fx-background-color: #506052;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+}
+
+.secure-menubar .menu-item {
+    -fx-text-fill: #D6BD98;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+.secure-menubar .menu-item:hover {
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+}
+
+
+/* TABLE */
+
+.secure-table {
+    -fx-background-color: white;
+    -fx-border-color: #677D6A;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Column Header background */
+.secure-table .column-header-background {
+    -fx-background-color: #000000;
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header {
+    -fx-background-color: #677D6A;  /* Header background color */
+    -fx-text-fill: white;           /* Text color for the header */
+}
+
+/* Column Header label text */
+.secure-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+}
+
+/* Rows background */
+.secure-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #40534C;
+}
+
+/* Optional: alternating row shading for clarity */
+.secure-table .table-row-cell:odd {
+    -fx-background-color: #FAFAFA;
+}
+
+/* Selected row */
+.secure-table .table-row-cell:filled:selected,
+.secure-table .table-row-cell:focused:selected {
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+}
+
+/* Scrollbar styling */
+.secure-table .scroll-bar:vertical,
+.secure-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.secure-table .scroll-bar .thumb {
+    -fx-background-color: #677D6A;
+    -fx-background-insets: 2;
+    -fx-background-radius: 5px;
+}
+
+.browse-button {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 10px;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-background-radius: 5;
+    -fx-effect: none;
+}
+
+.browse-button:hover {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-font-size: 10px;
+    -fx-background-color: #677D6A;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+}
+
+.background {
+    -fx-background-color: white;
+}
+
+.vault-name {
+    -fx-text-fill: #677D6A;
+}
