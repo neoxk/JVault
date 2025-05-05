@@ -8,4 +8,5 @@ import lombok.Data;
 public class Pointer {
     private long offset;
     private Integer length;
+    private Integer padding_size;
 }

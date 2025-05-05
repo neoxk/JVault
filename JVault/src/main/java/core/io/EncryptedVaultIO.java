@@ -13,9 +13,9 @@ public class EncryptedVaultIO implements VaultIO{
     private ICipher cipher;
     private Header header;
     private Index index;
-    private final int SECTOR_SIZE = 512;
+    private final int SECTOR_SIZE = 4096;
 
-    private int contentCounter = 12288;
+    private long next_sector = 24;
 
 
     public EncryptedVaultIO(FileProxy file, ICipher cipher) {
@@ -23,10 +23,13 @@ public class EncryptedVaultIO implements VaultIO{
         this.cipher = cipher;
     }
 
-    private void allocate(int size, String path) {
-        Pointer newPointer = new Pointer(contentCounter, size);
-        contentCounter += size;
-        index.addPointer(path, newPointer);
+    private Pointer allocate(int size, String path) {
+        int num_sectors = (size + SECTOR_SIZE - 1) / SECTOR_SIZE;
+        int padding = num_sectors * SECTOR_SIZE - size;
+        Pointer pointer = new Pointer(next_sector, num_sectors, padding);
+        index.addPointer(path, pointer);
+        next_sector += num_sectors + 1;
+        return pointer;
     }
 
     @Override
@@ -36,9 +39,9 @@ public class EncryptedVaultIO implements VaultIO{
 
     @Override
     public void writeFile(byte[] data, String path){
-        int sector_num = (data.length + SECTOR_SIZE - 1) / SECTOR_SIZE;
+        Pointer pointer = this.allocate(data.length, path);
 
-        byte[] padded = Arrays.copyOf(data, sector_num * SECTOR_SIZE);
+        byte[] padded = Arrays.copyOf(data, data.length + pointer.getPadding_size());
 
         byte[] encryptedData;
         try {
@@ -47,7 +50,6 @@ public class EncryptedVaultIO implements VaultIO{
             throw new RuntimeException("Failed to encrypt file", e);
         }
 
-        this.allocate(encryptedData.length, path);
         file.write(encryptedData, index.getPointer(path));
     }
 
@@ -55,7 +57,13 @@ public class EncryptedVaultIO implements VaultIO{
     public byte[] readFile(String path) {
         Pointer pointer = index.getPointer(path);
         try {
-            return cipher.decrypt(file.read(pointer));
+            byte[] decrypted = cipher.decrypt(file.read(pointer));
+            int padding = pointer.getPadding_size();
+            if (padding > 0) {
+                return Arrays.copyOfRange(decrypted, 0, decrypted.length - padding);
+            } else {
+                return decrypted;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to decrypt file", e);
         }
@@ -64,7 +72,6 @@ public class EncryptedVaultIO implements VaultIO{
 
     @Override
     public void format() {
-        file.write(new byte[file.getSize()], new Pointer(0, file.getSize()));
         file.purge();
     }
 }
