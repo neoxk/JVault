@@ -1,7 +1,8 @@
 package core.vault;
 
-import core.encryption.Cipher;
+import core.encryption.ICipher;
 import core.encryption.Password;
+import core.encryption.aes.AESCtrCipher;
 import core.io.EncryptedVaultIO;
 import core.io.fs.FileProxy;
 
@@ -15,8 +16,8 @@ public class VaultFactory {
     }
 
     public Vault create(Path sys_path, Password password) {
-        Cipher cipher = new AESGCMCipher(255, password);
-        FileProxy fileProxy = new FileProxy();
+        ICipher cipher = new AESCtrCipher(password);
+        FileProxy fileProxy = new FileProxy(sys_path);
         EncryptedVaultIO vaultIO = new EncryptedVaultIO(fileProxy, cipher);
 
         return new FileVault(vaultIO);
