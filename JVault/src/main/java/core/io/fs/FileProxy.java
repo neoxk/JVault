@@ -75,17 +75,12 @@ public class FileProxy{
         return buf.array();
     }
 
-    public byte[] readAll() {
-        return new byte[0];
-    }
-
-    public void writeSector(byte[] data, Pointer pointer) {}
 
     public int getSize() {
         return 0;
     }
 
-    public void purge() {
-
+    public void purge(Pointer pointer) {
+        write(new byte[pointer.getLength() * SECTOR_SIZE], pointer);
     }
 }

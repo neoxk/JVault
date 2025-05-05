@@ -5,145 +5,91 @@ import core.io.fs.Pointer;
 import lombok.Getter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Index {
+    private static final int SECTOR_SIZE        = 4096;
+    private static final int INDEX_START_SECTOR = 1;     // reserve sector #1…
+    private static final int INDEX_SECTOR_COUNT = 3;     // …through sector #3 for the index
 
-    @Getter
-    private final IndexNode root;
+    private final Map<String,Pointer> entries = new LinkedHashMap<>();
 
-    private FileProxy file;
-
-    public Index(FileProxy file) {
-        this.root = new IndexNode("/", null, new ArrayList<>());
-        this.file = file;
+    public Index() {
     }
 
     public Pointer getPointer(String path) {
-        String[] parts = path.split("/");
-        IndexNode current = root;
-        for (String part : parts) {
-            if (current == null) return null;
-            current = current.children().stream()
-                    .filter(node -> node.name().equals(part))
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        return current.pointer();
+        return entries.get(path);
     }
 
     public void addPointer(String path, Pointer pointer) {
-        IndexNode node = new IndexNode(path, pointer, new ArrayList<>());
-
-        if (path == null || path.isBlank()) {
-            root.children().add(node);
-            return;
-        }
-
-        String[] parts = path.split("/");
-        IndexNode current = root;
-
-        for (String part : parts) {
-            IndexNode next = current.children().stream()
-                    .filter(n -> n.name().equals(part))
-                    .findFirst()
-                    .orElse(null);
-
-            if (next == null) {
-                next = new IndexNode(part, null, new ArrayList<>());
-                current.children().add(next);
-            }
-
-            current = next;
-        }
-
-        current.children().add(node);
+        entries.put(path, pointer);
     }
 
-    private byte[] serialize() {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             DataOutputStream out  = new DataOutputStream(baos)) {
+    public void removePointer(String path) {
+        entries.remove(path);
+    }
 
-            List<IndexNode> files = collectFiles();
-            out.writeInt(files.size());
+    public List<String> listPaths() {
+        return new ArrayList<>(entries.keySet());
+    }
 
-            for (IndexNode n : files) {
-                out.writeUTF(buildPath(n));
-                out.writeLong(n.pointer().getOffset());
-                out.writeInt(n.pointer().getLength());
+    public byte[] serialize() {
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (var e : entries.entrySet()) {
+                sb.append(e.getKey())
+                        .append(',')
+                        .append(e.getValue().getOffset())
+                        .append(',')
+                        .append(e.getValue().getLength())
+                        .append(',')
+                        .append(e.getValue().getPadding_size())
+                        .append('\n');
             }
-            return baos.toByteArray();
-        } catch (IOException e) {
-            throw new IllegalStateException("Should never happen", e);
+
+            byte[] raw = sb.toString().getBytes(StandardCharsets.UTF_8);
+            return Arrays.copyOf(raw, INDEX_SECTOR_COUNT * SECTOR_SIZE);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to serialize index", e);
         }
     }
 
-    public static Index fromFile(FileProxy file) {
-        Index idx = new Index(file);
+    public static Index load(byte[] raw) {
+        Index idx = new Index();
 
-        byte[] data = new byte[100];
-        //TODO implement reading from file
-
-        try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(data))) {
-            int count = in.readInt();
-            for (int i = 0; i < count; i++) {
-                String path   = in.readUTF();
-                long   offset = in.readLong();
-                int    length = in.readInt();
-                idx.addPointer(path, new Pointer(offset, length));
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Corrupt index data", e);
+        // find the first NUL byte (0) or end of data
+        int len = 0;
+        while (len < raw.length && raw[len] != 0) {
+            len++;
         }
+
+        // decode just the meaningful part as UTF-8 CSV
+        String csv = new String(raw, 0, len, StandardCharsets.UTF_8);
+
+        // parse each non-blank line
+        for (String line : csv.split("\n")) {
+            if (line.isBlank()) continue;
+
+            // split into exactly 4 parts: path, offset, length, padding
+            String[] parts = line.split(",", 4);
+            if (parts.length != 4) {
+                throw new IllegalArgumentException("Malformed index line: " + line);
+            }
+
+            String path    = parts[0];
+            long   offset  = Long.parseLong(parts[1]);
+            int    length  = Integer.parseInt(parts[2]);
+            int    padding = Integer.parseInt(parts[3]);
+
+            idx.entries.put(path, new Pointer(offset, length, padding));
+        }
+
         return idx;
     }
-
-
-    private List<IndexNode> collectFiles() {
-        List<IndexNode> acc = new ArrayList<>();
-        walk(root, n -> { if (n.pointer() != null) acc.add(n); });
-        return acc;
-    }
-
-    private void walk(IndexNode node, Consumer<IndexNode> visit) {
-        visit.accept(node);
-        node.children().forEach(child -> walk(child, visit));
-    }
-
-    private String buildPath(IndexNode node) {
-        StringBuilder sb = new StringBuilder();
-        buildPathRec(node, sb);
-        return sb.toString();
-    }
-
-    private void buildPathRec(IndexNode node, StringBuilder sb) {
-        if (node == root) return;
-        buildPathRec(findParent(node), sb);
-        if (sb.length() > 0) sb.append('/');
-        sb.append(node.name());
-    }
-
-    private IndexNode findParent(IndexNode child) {
-        return findParentRec(root, child);
-    }
-    private IndexNode findParentRec(IndexNode current, IndexNode target) {
-        for (IndexNode c : current.children()) {
-            if (c == target) return current;
-            IndexNode found = findParentRec(c, target);
-            if (found != null) return found;
-        }
-        return null;
-    }
-
-    public void flush() {
-        byte[] data = serialize();
-        file.write(new byte[12288-4096], new Pointer(4096, 12288));
-        //TODO hardcoded index size and header size
-        file.write(data, new Pointer(4096, data.length));
-    }
-
-
 }
+
+
+
+
