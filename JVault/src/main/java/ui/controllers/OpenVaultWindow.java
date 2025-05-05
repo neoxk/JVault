@@ -1,5 +1,8 @@
 package ui.controllers;
 
+import core.encryption.Password;
+import core.vault.Vault;
+import core.vault.VaultFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,67 +15,74 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ui.controllers.helpers.UIHelper;
+import ui.controllers.MainWindow;  // import your main controller
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class OpenVaultWindow {
 
-    @FXML
-    private TextField vaultPathField;
+    @FXML private TextField vaultPathField;
+    @FXML private PasswordField passwordField;
 
     @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    void handleBrowse(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Vault Location");
-        File selectedDirectory = directoryChooser.showDialog(vaultPathField.getScene().getWindow());
-
-        if (selectedDirectory != null) {
-            vaultPathField.setText(selectedDirectory.getAbsolutePath());
+    private void handleBrowse(ActionEvent event) {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Select Vault Location");
+        File dir = chooser.showDialog(vaultPathField.getScene().getWindow());
+        if (dir != null) {
+            vaultPathField.setText(dir.getAbsolutePath());
         }
     }
 
     @FXML
-    void handleOpenVault(ActionEvent event) {
-        String vaultName = vaultPathField.getText();
-        String password = passwordField.getText();
+    private void handleOpenVault(ActionEvent event) {
+        String vaultPath = vaultPathField.getText().trim();
+        String pw        = passwordField.getText();
 
-        if (vaultName.isEmpty() || password.isEmpty()) {
-            UIHelper.showAlert("Error", "Please fill in all fields.", Alert.AlertType.ERROR);
+        if (vaultPath.isEmpty() || pw.isEmpty()) {
+            UIHelper.showAlert("Error",
+                    "Please fill in all fields.",
+                    Alert.AlertType.ERROR);
             return;
         }
 
-        // vault open logic here !!!
+        // 1) open the existing vault
+        Vault vault = new VaultFactory()
+                .open(Paths.get(vaultPath), new Password(pw));
+
+        // 2) load MainWindow
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/main-view.fxml"));
             Parent root = loader.load();
 
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.close();
+            // 3) inject vault
+            MainWindow mainCtrl = loader.getController();
+            mainCtrl.setVault(vault);
 
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root));
-            newStage.setTitle("JVault - Vault");
-            newStage.show();
+            // 4) close this dialog & show main UI
+            Stage openStage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+            openStage.close();
+
+            Stage mainStage = new Stage();
+            mainStage.setScene(new Scene(root));
+            mainStage.setTitle("JVault – Vault");
+            mainStage.show();
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            UIHelper.showAlert("Error",
+                    "Failed to load vault view:\n" + e.getMessage(),
+                    Alert.AlertType.ERROR);
         }
-
-        closeWindow();
     }
 
     @FXML
-    void handleCancel(ActionEvent event) {
-        closeWindow();
+    private void handleCancel(ActionEvent event) {
+        ((Stage) vaultPathField.getScene().getWindow()).close();
     }
-
-    private void closeWindow() {
-        Stage stage = (Stage) vaultPathField.getScene().getWindow();
-        UIHelper.closeWindow(stage);
-    }
-
-
 }

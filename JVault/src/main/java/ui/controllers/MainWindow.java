@@ -1,10 +1,15 @@
 package ui.controllers;
 
+import core.vault.Vault;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -12,11 +17,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
 
+import javafx.stage.Stage;
+import lombok.Setter;
 import ui.controllers.helpers.FileController;
 import ui.controllers.helpers.VaultController;
 import ui.managers.FileManager;
 
 import ui.controllers.helpers.UIHelper;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class MainWindow {
 
@@ -32,9 +42,23 @@ public class MainWindow {
     @FXML
     private TableView<FileManager> tableView;
 
+    private Vault vault;
+
     private final VaultController vaultController = new VaultController();
     private final FileController fileController = new FileController();
     private final ObservableList<FileManager> data = FXCollections.observableArrayList();
+
+    public void setVault(Vault vault) {
+        this.vault = vault;
+        loadFileList();
+    }
+
+    private void loadFileList() {
+        data.clear();
+        for (String path : vault.getPaths()) {
+            data.add(new FileManager(path, /*location=*/"", /*size=*/""));
+        }
+    }
 
     @FXML
     private void initialize() {
@@ -43,17 +67,17 @@ public class MainWindow {
         @SuppressWarnings("unchecked")
         TableColumn<FileManager, String> locationCol = (TableColumn<FileManager, String>) tableView.getColumns().get(1);
         @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
+        TableColumn<FileManager, String> driveCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
+        @SuppressWarnings("unchecked")
+        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(3);
+
 
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
+        driveCol.setCellValueFactory(new PropertyValueFactory<>("drive"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
 
         tableView.setItems(data);
-
-        // sample data
-        addFileEntry(new FileManager("MyFile.txt", "C:/Users/User/Documents", "15 KB"));
-        addFileEntry(new FileManager("Project.zip", "D:/Projects", "150 MB"));
     }
 
     public void addFileEntry(FileManager file) {
@@ -62,22 +86,50 @@ public class MainWindow {
 
     @FXML
     void handleAddFile(ActionEvent event) {
-        fileController.handleAddFile(event);
-    }
+        if (vault == null) {
+            UIHelper.showAlert("Error", "No vault open.", Alert.AlertType.ERROR);
+            return;
+        }
 
-    @FXML
-    void handleRemoveFile(ActionEvent event) {
-        FileManager selectedFile = tableView.getSelectionModel().getSelectedItem();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/add-file.fxml"));
+            Parent root = loader.load();
 
-        if (selectedFile != null) {
-            data.remove(selectedFile);
-        } else {
-            UIHelper.showAlert("No File Selected", "Please select a file to remove.", Alert.AlertType.WARNING);
+            AddFileWindow ctrl = loader.getController();
+            ctrl.setVault(vault);
+
+            Stage dialog = new Stage();
+            dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialog.setTitle("JVault – Add File");
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+
+            loadFileList();
+
+        } catch (IOException e) {
+            UIHelper.showAlert("Error",
+                    "Cannot open Add File dialog:\n" + e.getMessage(),
+                    Alert.AlertType.ERROR);
         }
     }
 
+
     @FXML
-    void handleDecryptFile(ActionEvent event) {
+    void handleRemoveFile(ActionEvent event) {
+        FileManager sel = tableView.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            UIHelper.showAlert("No File Selected",
+                    "Please select a file to remove.", Alert.AlertType.WARNING);
+            return;
+        }
+        vault.removeFile(Paths.get(sel.getLocation()));
+        vault.save();
+        loadFileList();
+    }
+
+    @FXML
+    void handleEditFile(ActionEvent event) {
         fileController.handleDecryptFile(event);
     }
 
