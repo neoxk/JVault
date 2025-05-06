@@ -185,3 +185,13 @@
 .vault-name {
     -fx-text-fill: #677D6A;
 }
+
+.controls {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-font-size: 20px;
+    -fx-text-fill: #677D6A;
+}
+
+.background-green {
+    -fx-background-color: #677D6A;
+}

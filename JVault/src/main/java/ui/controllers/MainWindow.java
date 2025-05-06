@@ -32,15 +32,6 @@ import java.nio.file.Paths;
 public class MainWindow {
 
     @FXML
-    private Label successStatus;
-
-    @FXML
-    private Label errorStatus;
-
-    @FXML
-    private Font x3;
-
-    @FXML
     private TableView<FileManager> tableView;
 
     private Vault vault;
@@ -69,13 +60,9 @@ public class MainWindow {
         TableColumn<FileManager, String> nameCol = (TableColumn<FileManager, String>) tableView.getColumns().get(0);
         @SuppressWarnings("unchecked")
         TableColumn<FileManager, String> locationCol = (TableColumn<FileManager, String>) tableView.getColumns().get(1);
-        @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
-
 
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        sizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
 
         tableView.setItems(data);
     }
@@ -140,29 +127,13 @@ public class MainWindow {
     }
 
     @FXML
-    void handleEditFile(ActionEvent event) {
-        fileController.handleDecryptFile(event);
-    }
-
-    @FXML
     void handleCreateVault(ActionEvent event) {
         vaultController.handleCreateVault(event);
     }
 
     @FXML
-    void handleEditVault(ActionEvent event) {
-        vaultController.handleEditVault(event);
-    }
-
-    @FXML
     void handleCloseVault(ActionEvent event) {
         vaultController.handleCloseVault(event);
-    }
-
-    @FXML
-    void handleQuit(ActionEvent event) {
-        Platform.exit();
-        System.exit(0);
     }
 
     @FXML
@@ -188,7 +159,5 @@ public class MainWindow {
         }
         loadFileList();
     }
-
-
 
 }

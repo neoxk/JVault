@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ui.controllers.helpers.UIHelper;
 import ui.controllers.MainWindow;  // import your main controller
@@ -29,11 +30,11 @@ public class OpenVaultWindow {
 
     @FXML
     private void handleBrowse(ActionEvent event) {
-        DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setTitle("Select Vault Location");
-        File dir = chooser.showDialog(vaultPathField.getScene().getWindow());
-        if (dir != null) {
-            vaultPathField.setText(dir.getAbsolutePath());
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
+        java.io.File chosen = chooser.showOpenDialog(vaultPathField.getScene().getWindow());
+        if (chosen != null) {
+            vaultPathField.setText(chosen.getAbsolutePath());
         }
     }
 
