@@ -71,6 +71,7 @@ public class EncryptedVaultIO implements VaultIO{
         byte[] padded = Arrays.copyOf(encryptedData, encryptedData.length + pointer.getPadding_size());
 
         file.write(padded, index.getPointer(path));
+        saveMeta();
     }
 
     @Override
@@ -90,6 +91,7 @@ public class EncryptedVaultIO implements VaultIO{
         Pointer pointer = index.getPointer(path);
         file.purge(pointer);
         index.removePointer(path);
+        saveMeta();
     }
 
     @Override
