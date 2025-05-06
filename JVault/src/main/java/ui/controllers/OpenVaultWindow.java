@@ -34,7 +34,7 @@ public class OpenVaultWindow {
     private void handleBrowse(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
-        java.io.File chosen = chooser.showOpenDialog(vaultPathField.getScene().getWindow());
+        File chosen = chooser.showOpenDialog(vaultPathField.getScene().getWindow());
         if (chosen != null) {
             vaultPathField.setText(chosen.getAbsolutePath());
         }
@@ -52,9 +52,15 @@ public class OpenVaultWindow {
             return;
         }
 
+        Vault vault = null;
+
         // 1) open the existing vault
-        Vault vault = new VaultFactory()
-                .open(Paths.get(vaultPath), new Password(pw));
+        try {
+            vault = new VaultFactory()
+                    .open(Paths.get(vaultPath), new Password(pw));
+        } catch (IllegalArgumentException e) {
+            UIHelper.showAlert("Error", "Incorrect vault path or password.\nFailed to open the vault: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
 
         // 2) load MainWindow
         try {
@@ -78,10 +84,8 @@ public class OpenVaultWindow {
             mainStage.setTitle("JVault – Vault");
             mainStage.show();
 
-        } catch (IOException e) {
-            UIHelper.showAlert("Error",
-                    "Failed to load vault view:\n" + e.getMessage(),
-                    Alert.AlertType.ERROR);
+        } catch (IOException | IllegalArgumentException e) {
+            UIHelper.showAlert("Error", "Failed to open the vault:\n" + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
