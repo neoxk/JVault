@@ -26,6 +26,7 @@ import ui.managers.FileManager;
 import ui.controllers.helpers.UIHelper;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MainWindow {
@@ -55,8 +56,10 @@ public class MainWindow {
 
     private void loadFileList() {
         data.clear();
+        int counter = 0;
+        String [] paths = vault.getPaths().toArray(new String[0]);
         for (String path : vault.getPaths()) {
-            data.add(new FileManager(path, /*location=*/"", /*size=*/""));
+            data.add(new FileManager(path, paths[counter++], /*size=*/""));
         }
     }
 
@@ -67,14 +70,11 @@ public class MainWindow {
         @SuppressWarnings("unchecked")
         TableColumn<FileManager, String> locationCol = (TableColumn<FileManager, String>) tableView.getColumns().get(1);
         @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> driveCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
-        @SuppressWarnings("unchecked")
-        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(3);
+        TableColumn<FileManager, String> sizeCol = (TableColumn<FileManager, String>) tableView.getColumns().get(2);
 
 
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        driveCol.setCellValueFactory(new PropertyValueFactory<>("drive"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
 
         tableView.setItems(data);
@@ -120,11 +120,22 @@ public class MainWindow {
         FileManager sel = tableView.getSelectionModel().getSelectedItem();
         if (sel == null) {
             UIHelper.showAlert("No File Selected",
-                    "Please select a file to remove.", Alert.AlertType.WARNING);
+                    "Please select a file to remove.",
+                    Alert.AlertType.WARNING);
             return;
         }
-        vault.removeFile(Paths.get(sel.getLocation()));
-        vault.save();
+
+        String vaultKey = sel.getName();
+        try {
+            vault.removeFile(vaultKey);
+            UIHelper.showAlert("Success",
+                    "File removed successfully:\n" + vaultKey,
+                    Alert.AlertType.INFORMATION);
+        } catch (Exception ex) {
+            UIHelper.showAlert("Removing Error",
+                    "Could not remove “" + vaultKey + "”:\n" + ex.getMessage(),
+                    Alert.AlertType.ERROR);
+        }
         loadFileList();
     }
 
@@ -153,5 +164,31 @@ public class MainWindow {
         Platform.exit();
         System.exit(0);
     }
+
+    @FXML
+    public void handleDecryptFile(ActionEvent event) {
+        FileManager sel = tableView.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            UIHelper.showAlert("No File Selected",
+                    "Please select a file to decrypt.",
+                    Alert.AlertType.WARNING);
+            return;
+        }
+
+        String vaultKey = sel.getName();
+        try {
+            vault.decryptFile(vaultKey);
+            UIHelper.showAlert("Success",
+                    "File decrypted successfully:\n" + vaultKey,
+                    Alert.AlertType.INFORMATION);
+        } catch (Exception ex) {
+            UIHelper.showAlert("Decryption Error",
+                    "Could not decrypt “" + vaultKey + "”:\n" + ex.getMessage(),
+                    Alert.AlertType.ERROR);
+        }
+        loadFileList();
+    }
+
+
 
 }

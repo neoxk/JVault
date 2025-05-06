@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class FileVault implements Vault {
     }
 
     @Override
-    public void removeFile(Path internal_path) {
-
+    public void removeFile(String internal_path) {
+        vaultIO.removeFile(internal_path);
     }
 
     @Override
@@ -53,12 +54,28 @@ public class FileVault implements Vault {
 
     @Override
     public void decryptFile(String internalPath) {
+        // 1) read the raw bytes from inside the vault
         byte[] data = vaultIO.readFile(internalPath);
-        Path outPath = vaultIO.getVaultPath().resolve(internalPath);
+
+        // 2) figure out where the vault file lives on disk
+        Path vaultFile = vaultIO.getVaultPath();
+
+        // 3) use its *parent* directory as the extraction root
+        Path vaultDir  = vaultFile.getParent();
+        if (vaultDir == null) {
+            // fallback to current working dir or throw
+            vaultDir = Paths.get("");
+        }
+
+        // 4) now resolve the internalPath under that dir
+        Path outPath = vaultDir.resolve(internalPath);
+
         try {
+            // make sure any sub-folders exist
             if (outPath.getParent() != null) {
                 Files.createDirectories(outPath.getParent());
             }
+            // write the decrypted bytes
             try (OutputStream out = Files.newOutputStream(outPath,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING,
@@ -66,9 +83,12 @@ public class FileVault implements Vault {
                 out.write(data);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to write file at " + internalPath, e);
+            // include the real file path in the error for clarity
+            throw new RuntimeException("Failed to write file to "
+                    + outPath.toAbsolutePath(), e);
         }
     }
+
 
     @Override
     public List<String> getPaths() {
