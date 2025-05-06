@@ -47,10 +47,8 @@ public class MainWindow {
 
     private void loadFileList() {
         data.clear();
-        int counter = 0;
-        String [] paths = vault.getPaths().toArray(new String[0]);
         for (String path : vault.getPaths()) {
-            data.add(new FileManager(path, paths[counter++], /*size=*/""));
+            data.add(new FileManager(path, path, /*size=*/""));
         }
     }
 
