@@ -48,19 +48,13 @@
     <content>
       <AnchorPane id="Content" prefHeight="573.0" prefWidth="895.0" styleClass="background" stylesheets="@css/style.css">
                <children>
-                  <Text layoutX="216.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Name:">
+                  <Text layoutX="224.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Path:">
                      <font>
                         <Font name="Segoe UI" size="14.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="fileNameField" layoutX="292.0" layoutY="270.0" prefHeight="25.0" prefWidth="320.0" promptText="Enter file name..." />
-                  <Text layoutX="224.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File Path:">
-                     <font>
-                        <Font name="Segoe UI" size="14.0" />
-                     </font>
-                  </Text>
-                  <TextField fx:id="filePathField" layoutX="292.0" layoutY="316.0" prefHeight="25.0" prefWidth="320.0" promptText="Choose file path..." />
-                  <Button layoutX="622.0" layoutY="312.0" minHeight="17.0" mnemonicParsing="false" onAction="#handleBrowse" prefHeight="33.0" prefWidth="57.0" styleClass="browse-button" stylesheets="@css/style.css" text="Browse">
+                  <TextField fx:id="filePathField" layoutX="292.0" layoutY="291.0" prefHeight="25.0" prefWidth="320.0" promptText="Choose file path..." />
+                  <Button layoutX="622.0" layoutY="287.0" minHeight="17.0" mnemonicParsing="false" onAction="#handleBrowse" prefHeight="33.0" prefWidth="57.0" styleClass="browse-button" stylesheets="@css/style.css" text="Browse">
                      <font>
                         <Font name="Franklin Gothic Book" size="20.0" />
                      </font>

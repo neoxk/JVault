@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class OpenVaultWindow {
 
@@ -72,6 +74,7 @@ public class OpenVaultWindow {
 
             Stage mainStage = new Stage();
             mainStage.setScene(new Scene(root));
+            mainStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/img/icon.png"))));
             mainStage.setTitle("JVault – Vault");
             mainStage.show();
 
@@ -84,6 +87,21 @@ public class OpenVaultWindow {
 
     @FXML
     private void handleCancel(ActionEvent event) {
-        ((Stage) vaultPathField.getScene().getWindow()).close();
+        Stage currentStage = (Stage) vaultPathField.getScene().getWindow();
+        currentStage.close();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/welcome.fxml"));
+            Parent root = loader.load();
+
+            Stage welcomeStage = new Stage();
+            welcomeStage.setScene(new Scene(root));
+            welcomeStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/img/icon.png"))));
+            welcomeStage.setTitle("JVault - Welcome");
+            welcomeStage.show();
+
+        } catch (IOException e) {
+            UIHelper.showAlert("Error", "Failed to load Welcome Window:\n" + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

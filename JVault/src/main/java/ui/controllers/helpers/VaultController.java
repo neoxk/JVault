@@ -8,10 +8,6 @@ public class VaultController {
         UIHelper.loadWindow(event, "/fxml/create-new-vault.fxml", "JVault - Create New Vault", true);
     }
 
-    public void handleEditVault(ActionEvent event) {
-        UIHelper.loadWindow(event, "/fxml/vault-properties.fxml", "JVault - Edit Vault", false);
-    }
-
     public void handleOpenVault(ActionEvent event) {
         UIHelper.loadWindow(event, "/fxml/open-vault.fxml", "JVault - Open Vault", true);
     }

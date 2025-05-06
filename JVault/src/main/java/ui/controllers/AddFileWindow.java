@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 
 public class AddFileWindow {
 
-    @FXML private TextField fileNameField;
     @FXML private TextField filePathField;
 
     private Vault vault;
@@ -37,7 +36,6 @@ public class AddFileWindow {
                 filePathField.getScene().getWindow());
         if (chosen != null) {
             filePathField.setText(chosen.getAbsolutePath());
-            fileNameField.setText(chosen.getName());
         }
     }
 
@@ -69,7 +67,7 @@ public class AddFileWindow {
     }
 
     private void closeWindow() {
-        Stage stage = (Stage) fileNameField.getScene().getWindow();
+        Stage stage = (Stage) filePathField.getScene().getWindow();
         UIHelper.closeWindow(stage);
     }
 }

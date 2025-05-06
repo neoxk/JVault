@@ -6,9 +6,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class UIHelper {
@@ -37,6 +39,7 @@ public class UIHelper {
 
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.getIcons().add(new Image(Objects.requireNonNull(UIHelper.class.getResourceAsStream("/fxml/img/icon.png"))));
             newStage.setTitle(title);
             newStage.show();
         } catch (IOException e) {

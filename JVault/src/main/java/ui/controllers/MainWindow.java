@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 
 import javafx.stage.Stage;
@@ -28,6 +29,7 @@ import ui.controllers.helpers.UIHelper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class MainWindow {
 
@@ -86,6 +88,7 @@ public class MainWindow {
 
             Stage dialog = new Stage();
             dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialog.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/img/icon.png"))));
             dialog.setTitle("JVault – Add File");
             dialog.setScene(new Scene(root));
             dialog.showAndWait();
