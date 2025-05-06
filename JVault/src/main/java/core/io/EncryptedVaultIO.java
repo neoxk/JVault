@@ -41,6 +41,8 @@ public class EncryptedVaultIO implements VaultIO{
             this.index = Index.load(indexBytes);
         }
 
+        saveMeta();
+
     }
 
 
