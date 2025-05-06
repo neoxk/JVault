@@ -1,9 +1,12 @@
 package core.io;
 
+import core.encryption.CipherFactory;
+import core.encryption.ICipher;
 import core.io.fs.FileProxy;
 import core.io.fs.Pointer;
 import lombok.Getter;
 
+import javax.crypto.Cipher;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +61,13 @@ public class Header {
         }
     }
 
-    public static Header load(byte[] headerBytes) {
+    public static Header load(byte[] headerBytes, ICipher cipher) {
+        try {
+            headerBytes = cipher.decrypt(headerBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decrypt header", e);
+        }
+
         if (headerBytes == null) {
             throw new IllegalArgumentException("Header bytes cannot be null");
         }

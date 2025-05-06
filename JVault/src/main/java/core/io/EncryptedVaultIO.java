@@ -37,8 +37,8 @@ public class EncryptedVaultIO implements VaultIO{
             Pointer indexPointer  = new Pointer(1, 4, 0);
             byte[] headerBytes = this.file.read(headerPointer);
             byte[] indexBytes  = this.file.read(indexPointer);
-            this.header = Header.load(headerBytes);
-            this.index = Index.load(indexBytes);
+            this.header = Header.load(headerBytes, cipher);
+            this.index = Index.load(indexBytes, cipher);
         }
 
         saveMeta();
@@ -54,6 +54,7 @@ public class EncryptedVaultIO implements VaultIO{
         next_sector += num_sectors + 1;
         return pointer;
     }
+
 
     @Override
     public List<String> getPaths() {
@@ -101,16 +102,15 @@ public class EncryptedVaultIO implements VaultIO{
         byte[] headerBytes = header.serialize();
         byte[] indexBytes  = index.serialize();
 
-        //TODO encrypt header and index
-//        try {
-//            headerBytes = cipher.encrypt(headerBytes);
-//            indexBytes  = cipher.encrypt(indexBytes);
-//        } catch(Exception e) {
-//            throw new RuntimeException("Failed to encrypt header", e);
-//        }
-//
-        byte[] paddedHeader = Arrays.copyOf(headerBytes, SECTOR_SIZE);
-        byte[] paddedIndex  = Arrays.copyOf(indexBytes, 4* SECTOR_SIZE);
+        byte[] paddedHeader = Arrays.copyOf(headerBytes, SECTOR_SIZE - 32);
+        byte[] paddedIndex  = Arrays.copyOf(indexBytes, 4* SECTOR_SIZE - (16+4*16));
+
+        try {
+            paddedHeader = cipher.encrypt(paddedHeader);
+            paddedIndex = cipher.encrypt(paddedIndex);
+        } catch(Exception e) {
+            throw new RuntimeException("Failed to encrypt header or index", e);
+        }
 
         file.write(paddedHeader, new Pointer(0, 1, 0));
         file.write(paddedIndex, new Pointer(1, 4, 0));

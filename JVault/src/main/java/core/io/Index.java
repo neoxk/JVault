@@ -1,9 +1,11 @@
 package core.io;
 
+import core.encryption.ICipher;
 import core.io.fs.FileProxy;
 import core.io.fs.Pointer;
 import lombok.Getter;
 
+import javax.crypto.Cipher;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -56,7 +58,13 @@ public class Index {
         }
     }
 
-    public static Index load(byte[] raw) {
+    public static Index load(byte[] raw, ICipher cipher) {
+        try {
+            raw = cipher.decrypt(raw);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decrypt index", e);
+        }
+
         Index idx = new Index();
 
         // find the first NUL byte (0) or end of data
