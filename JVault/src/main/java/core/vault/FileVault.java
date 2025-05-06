@@ -3,7 +3,6 @@ package core.vault;
 import core.io.VaultIO;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,6 +48,25 @@ public class FileVault implements Vault {
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to write file at " + sysPath, e);
+        }
+    }
+
+    @Override
+    public void decryptFile(String internalPath) {
+        byte[] data = vaultIO.readFile(internalPath);
+        Path outPath = vaultIO.getVaultPath().resolve(internalPath);
+        try {
+            if (outPath.getParent() != null) {
+                Files.createDirectories(outPath.getParent());
+            }
+            try (OutputStream out = Files.newOutputStream(outPath,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE)) {
+                out.write(data);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write file at " + internalPath, e);
         }
     }
 

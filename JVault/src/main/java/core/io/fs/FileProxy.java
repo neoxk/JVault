@@ -83,4 +83,8 @@ public class FileProxy{
     public void purge(Pointer pointer) {
         write(new byte[pointer.getLength() * SECTOR_SIZE], pointer);
     }
+
+    public Path getPath() {
+        return sys_path;
+    }
 }

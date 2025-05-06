@@ -7,7 +7,6 @@ import core.io.fs.Pointer;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class EncryptedVaultIO implements VaultIO{
 
@@ -111,5 +110,10 @@ public class EncryptedVaultIO implements VaultIO{
 
         file.write(paddedHeader, new Pointer(0, 1, 0));
         file.write(paddedIndex, new Pointer(1, 4, 0));
+    }
+
+    @Override
+    public Path getVaultPath() {
+        return file.getPath();
     }
 }

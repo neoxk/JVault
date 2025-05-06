@@ -9,6 +9,9 @@ public interface Vault {
     void addFile(Path sys_path, String internal_path);
     void removeFile(Path internal_path);
     void decryptFile(String sys_path, String internal_path);
+
+    void decryptFile(String internalPath);
+
     List<String> getPaths();
     void save();
 }

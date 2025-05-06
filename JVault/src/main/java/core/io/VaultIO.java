@@ -3,6 +3,7 @@ package core.io;
 import core.io.fs.Pointer;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -12,4 +13,6 @@ public interface VaultIO {
     public byte[] readFile(String path);
     public void removeFile(String path);
     public void saveMeta();
+
+    Path getVaultPath();
 }
