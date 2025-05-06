@@ -85,6 +85,6 @@ public class FileProxy{
     }
 
     public Path getPath() {
-        return sys_path.getParent();
+        return sys_path;
     }
 }

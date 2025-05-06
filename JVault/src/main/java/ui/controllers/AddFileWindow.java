@@ -29,43 +29,39 @@ public class AddFileWindow {
     }
 
     @FXML
-    void handleAddFile(ActionEvent event) {
-        if (vault == null) {
-            UIHelper.showAlert("Error", "Vault not initialized.", Alert.AlertType.ERROR);
-            return;
-        }
-
-        String internalPath = fileNameField.getText().trim();
-        String sourcePath   = filePathField.getText().trim();
-        if (internalPath.isEmpty() || sourcePath.isEmpty()) {
-            UIHelper.showAlert(
-                    "Error",
-                    "Please fill in both the file name and file path.",
-                    Alert.AlertType.ERROR
-            );
-            return;
-        }
-
-        Path sysPath = Paths.get(sourcePath);
-        try {
-            vault.addFile(sysPath, internalPath);
-            vault.save();
-            UIHelper.showAlert("Success", "File added successfully!", Alert.AlertType.CONFIRMATION);
-            closeWindow();
-        } catch (Exception e) {
-            UIHelper.showAlert("Error", "Failed to add file: " + e.getMessage(), Alert.AlertType.ERROR);
+    void handleBrowse(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        java.io.File chosen = chooser.showOpenDialog(
+                filePathField.getScene().getWindow());
+        if (chosen != null) {
+            filePathField.setText(chosen.getAbsolutePath());
+            fileNameField.setText(chosen.getName());
         }
     }
 
     @FXML
-    void handleBrowse(ActionEvent event) {
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
-        java.io.File chosen = chooser.showOpenDialog(fileNameField.getScene().getWindow());
-        if (chosen != null) {
-            filePathField.setText(chosen.getAbsolutePath());
+    void handleAddFile(ActionEvent event) {
+        String sourcePath   = filePathField.getText().trim();
+        Path sysPath        = Paths.get(sourcePath);
+
+        String internalPath = sysPath.getFileName().toString();
+
+        try {
+            vault.addFile(sysPath, internalPath);
+            vault.save();
+            UIHelper.showAlert("Success",
+                    "File added successfully as “" + internalPath + "”",
+                    Alert.AlertType.CONFIRMATION);
+            closeWindow();
+        } catch (Exception e) {
+            UIHelper.showAlert("Error",
+                    "Failed to add file: " + e.getMessage(),
+                    Alert.AlertType.ERROR);
         }
     }
+
 
     @FXML
     void handleCancel(ActionEvent event) {

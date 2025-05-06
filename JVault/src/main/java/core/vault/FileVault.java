@@ -54,28 +54,21 @@ public class FileVault implements Vault {
 
     @Override
     public void decryptFile(String internalPath) {
-        // 1) read the raw bytes from inside the vault
         byte[] data = vaultIO.readFile(internalPath);
 
-        // 2) figure out where the vault file lives on disk
         Path vaultFile = vaultIO.getVaultPath();
 
-        // 3) use its *parent* directory as the extraction root
         Path vaultDir  = vaultFile.getParent();
         if (vaultDir == null) {
-            // fallback to current working dir or throw
             vaultDir = Paths.get("");
         }
 
-        // 4) now resolve the internalPath under that dir
         Path outPath = vaultDir.resolve(internalPath);
 
         try {
-            // make sure any sub-folders exist
             if (outPath.getParent() != null) {
                 Files.createDirectories(outPath.getParent());
             }
-            // write the decrypted bytes
             try (OutputStream out = Files.newOutputStream(outPath,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING,
@@ -83,7 +76,6 @@ public class FileVault implements Vault {
                 out.write(data);
             }
         } catch (IOException e) {
-            // include the real file path in the error for clarity
             throw new RuntimeException("Failed to write file to "
                     + outPath.toAbsolutePath(), e);
         }
